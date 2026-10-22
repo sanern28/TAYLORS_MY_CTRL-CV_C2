@@ -1,4 +1,4 @@
-# TAYLORS_MY_CTRL-CV_C2
+# TAYLORS_MY_CTRL CV_C2
 [![Built with TideCloak](https://tide.org/badges/built-with-tidecloak.svg)](https://tide.org/tidecloak?utm_source=github&utm_medium=readme&utm_campaign=unlocked)
 
 ## Project overview
