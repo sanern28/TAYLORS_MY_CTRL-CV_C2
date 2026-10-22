@@ -644,3 +644,173 @@ footer{flex-shrink:0}
   .user-menu{position:fixed;left:12px;right:12px;top:68px;width:auto}
   .btn-signin{min-height:40px;padding:0 14px}
 }
+
+
+/* ===== BorrowLoop Hackathon Trust Upgrade ===== */
+.bl-upgrade {
+  margin: 36px auto;
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--card);
+}
+.bl-kicker {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.bl-upgrade h2 {
+  margin: 8px 0;
+  font-size: clamp(25px, 4vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+.bl-lead {
+  max-width: 700px;
+  color: var(--muted);
+  margin: 10px 0 24px;
+}
+.bl-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+.bl-feature {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--bg);
+}
+.bl-feature .bl-icon {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+.bl-feature h3 {
+  font-size: 15px;
+  margin-bottom: 7px;
+}
+.bl-feature p {
+  font-size: 13px;
+  color: var(--muted);
+}
+.bl-demo {
+  padding: 24px;
+  background: #14201B;
+  color: #fff;
+  border-radius: 20px;
+}
+.bl-demo p {
+  color: #C7D6CE;
+  font-size: 14px;
+}
+.bl-demo-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.bl-demo-tag {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 99px;
+  background: #29483B;
+  color: #C9F4DE;
+  font-size: 11px;
+  font-weight: 800;
+}
+.bl-money-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+.bl-money {
+  padding: 14px;
+  border-radius: 14px;
+  background: #26362F;
+}
+.bl-money span {
+  display: block;
+  color: #C7D6CE;
+  font-size: 12px;
+}
+.bl-money strong {
+  display: block;
+  margin-top: 5px;
+  font-size: clamp(18px, 3vw, 26px);
+}
+.bl-demo-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.bl-demo-actions button {
+  min-height: 44px;
+  padding: 10px 15px;
+  border: 0;
+  border-radius: 12px;
+  background: #F6C453;
+  color: #14201B;
+  font-weight: 800;
+  cursor: pointer;
+}
+.bl-demo-actions button.secondary {
+  border: 1px solid #53665B;
+  background: transparent;
+  color: #fff;
+}
+.bl-demo-actions button:focus-visible {
+  outline: 3px solid #F6C453;
+  outline-offset: 3px;
+}
+.bl-result {
+  margin-top: 16px;
+  padding: 15px;
+  border: 1px solid #53665B;
+  border-radius: 14px;
+  background: #1D3027;
+}
+.bl-result strong {
+  display: block;
+  margin-bottom: 5px;
+}
+.bl-result p {
+  font-size: 13px;
+}
+.bl-impact {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.bl-impact > div {
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--green-soft);
+}
+.bl-impact strong {
+  display: block;
+  color: var(--green-d);
+  font-size: 23px;
+}
+.bl-impact span {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.bl-small {
+  margin-top: 12px;
+  font-size: 11px !important;
+  opacity: .8;
+}
+@media (max-width: 700px) {
+  .bl-upgrade { padding: 18px; }
+  .bl-feature-grid { grid-template-columns: 1fr; }
+  .bl-money-grid { grid-template-columns: 1fr; }
+  .bl-impact { grid-template-columns: 1fr; }
+  .bl-demo { padding: 18px; }
+}

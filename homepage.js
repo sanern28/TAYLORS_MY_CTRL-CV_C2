@@ -2319,3 +2319,685 @@ try {
     setTimeout(() => { if (userLoc.source === 'default' && ME.signedIn) openLocation(); }, 900);
   }
 } catch (e) {}
+
+
+/* ===== BorrowLoop Hackathon Trust Upgrade ===== */
+(function () {
+  const app = document.getElementById('app');
+  if (!app) return;
+
+  function addTrustSection() {
+    const isHome = location.hash === '' ||
+      location.hash === '#/' ||
+      location.hash === '#';
+
+    const existing = document.getElementById('blTrustUpgrade');
+
+    if (!isHome) {
+      if (existing) existing.remove();
+      return;
+    }
+
+    if (existing) return;
+
+    const section = document.createElement('section');
+    section.id = 'blTrustUpgrade';
+    section.className = 'wrap bl-upgrade';
+
+    section.innerHTML = `
+      <div class="bl-kicker">BorrowLoop · Our innovation</div>
+      <h2>Borrow with confidence.<br>Return with peace of mind.</h2>
+      <p class="bl-lead">
+        BorrowLoop tackles the biggest barrier to community borrowing:
+        trust. Transparent deposits, condition evidence and a fair
+        dispute process help protect both borrowers and item owners.
+      </p>
+
+      <div class="bl-feature-grid">
+        <article class="bl-feature">
+          <div class="bl-icon">🔐</div>
+          <h3>Deposit Protection</h3>
+          <p>
+            See the deposit before booking. Track whether it is held,
+            awaiting review, refunded or under dispute.
+          </p>
+        </article>
+        <article class="bl-feature">
+          <div class="bl-icon">📸</div>
+          <h3>Condition Evidence</h3>
+          <p>
+            Record item condition at pickup and return to help
+            distinguish pre-existing damage from new damage.
+          </p>
+        </article>
+        <article class="bl-feature">
+          <div class="bl-icon">⚖️</div>
+          <h3>Fair Dispute Resolution</h3>
+          <p>
+            A damage claim does not automatically mean losing the
+            entire deposit. Review evidence before deciding.
+          </p>
+        </article>
+      </div>
+
+      <div class="bl-demo" id="blDepositDemo">
+        <div class="bl-demo-top">
+          <div>
+            <div class="bl-kicker" style="color:#C9F4DE">
+              Interactive prototype
+            </div>
+            <h2 style="font-size:25px;margin-top:8px">
+              See how deposit protection works
+            </h2>
+            <p style="margin-top:8px">
+              Scenario: borrowing a camera with a RM400 deposit.
+            </p>
+          </div>
+          <span class="bl-demo-tag">SIMULATED DEMO</span>
+        </div>
+
+        <div class="bl-money-grid">
+          <div class="bl-money">
+            <span>Initial deposit</span>
+            <strong>RM400</strong>
+          </div>
+          <div class="bl-money">
+            <span>Amount under review</span>
+            <strong id="blReviewAmount">RM0</strong>
+          </div>
+          <div class="bl-money">
+            <span>Refund amount</span>
+            <strong id="blRefundAmount">RM400</strong>
+          </div>
+        </div>
+
+        <div class="bl-demo-actions">
+          <button type="button" data-bl-action="normal">
+            ✓ Return in good condition
+          </button>
+          <button type="button" class="secondary"
+            data-bl-action="damage">
+            ⚠ Report RM120 damage
+          </button>
+          <button type="button" class="secondary"
+            data-bl-action="dispute">
+            ⚖ Challenge a claim
+          </button>
+          <button type="button" class="secondary"
+            data-bl-action="reset">
+            Reset demo
+          </button>
+        </div>
+
+        <div class="bl-result" aria-live="polite" role="status">
+          <strong id="blResultTitle">Deposit held pending return</strong>
+          <p id="blResultText">
+            Select a scenario above to see how BorrowLoop handles
+            the deposit. No real payment or refund will occur.
+          </p>
+        </div>
+
+        <p class="bl-small">
+          Prototype only: this simulation does not move money,
+          verify identities or make a legally binding decision.
+        </p>
+      </div>
+
+      <div style="margin-top:32px">
+        <div class="bl-kicker">Technology and trust</div>
+        <h2 style="font-size:27px">Where TideCloak fits</h2>
+        <p class="bl-lead">
+          BorrowLoop needs a trustworthy way to handle sensitive
+          rental actions. TideCloak should be integrated at the
+          specific security or trust checkpoint supported by its
+          official capabilities.
+        </p>
+
+        <div class="box" style="margin-top:16px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div style="font-size:27px">🛡️</div>
+            <div>
+              <h3 style="margin-bottom:6px">TideCloak integration point</h3>
+              <p class="muted" style="font-size:14px">
+                Proposed flow: a user initiates a rental action,
+                the supported TideCloak mechanism is invoked,
+                and BorrowLoop handles the result before
+                continuing the transaction.
+              </p>
+              <p style="font-size:12px;margin-top:10px;color:var(--orange)">
+                Integration pending: connect the official TideCloak
+                SDK or API and demonstrate its real output.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:32px">
+        <div class="bl-kicker">Value and impact</div>
+        <h2 style="font-size:27px">More than just borrowing</h2>
+        <p class="bl-lead">
+          A sharing economy can help people save money, earn from
+          unused belongings and make better use of existing resources.
+        </p>
+
+        <div class="bl-impact">
+          <div>
+            <strong>Save money</strong>
+            <span>Borrow instead of buying rarely used items.</span>
+          </div>
+          <div>
+            <strong>Earn income</strong>
+            <span>Let neighbours earn from unused belongings.</span>
+          </div>
+          <div>
+            <strong>Reuse more</strong>
+            <span>Give existing products more useful life.</span>
+          </div>
+        </div>
+
+        <p class="muted" style="font-size:12px;margin-top:12px">
+          Expected benefits, not measured results. Actual savings
+          and environmental impact depend on user activity.
+        </p>
+      </div>
+    `;
+
+    app.appendChild(section);
+
+    const title = document.getElementById('blResultTitle');
+    const text = document.getElementById('blResultText');
+    const review = document.getElementById('blReviewAmount');
+    const refund = document.getElementById('blRefundAmount');
+
+    section.addEventListener('click', function (event) {
+      const button = event.target.closest('[data-bl-action]');
+      if (!button) return;
+
+      const action = button.dataset.blAction;
+
+      if (action === 'normal') {
+        review.textContent = 'RM0';
+        refund.textContent = 'RM400';
+        title.textContent = '✓ Full refund approved';
+        text.textContent =
+          'The return is recorded as damage-free. In a real system, ' +
+          'the deposit would be eligible for release after the ' +
+          'required checks and confirmations.';
+      }
+
+      if (action === 'damage') {
+        review.textContent = 'RM120';
+        refund.textContent = 'RM280*';
+        title.textContent = '⚠ Damage claim submitted';
+        text.textContent =
+          'A RM120 claim has been recorded for review. The claimed ' +
+          'amount is not automatically deducted. If the claim is ' +
+          'approved in full, RM280 would remain refundable.';
+      }
+
+      if (action === 'dispute') {
+        review.textContent = 'RM120';
+        refund.textContent = 'Pending';
+        title.textContent = '⚖ Claim disputed';
+        text.textContent =
+          'The borrower challenges the RM120 claim. The disputed ' +
+          'amount remains unresolved while both parties’ evidence ' +
+          'is reviewed. The final refund depends on the decision.';
+      }
+
+      if (action === 'reset') {
+        review.textContent = 'RM0';
+        refund.textContent = 'RM400';
+        title.textContent = 'Deposit held pending return';
+        text.textContent =
+          'Select a scenario above to see how BorrowLoop handles ' +
+          'the deposit. No real payment or refund will occur.';
+      }
+    });
+  }
+
+  // Support the existing hash-based navigation.
+  window.addEventListener('hashchange', addTrustSection);
+
+  // Run after the current page has rendered.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addTrustSection);
+  } else {
+    addTrustSection();
+  }
+})();
+
+
+/* =========================================================
+   BorrowLoop — TideCloak Hackathon Demo Upgrade
+   Paste this entire block at the VERY END of homepage.js.
+   This is a demo concept, not a live TideCloak integration.
+   ========================================================= */
+
+(function () {
+  "use strict";
+
+  const SECTION_ID = "blTrustUpgrade";
+
+  const styleId = "blTidecloakDemoStyles";
+
+  function addStyles() {
+    if (document.getElementById(styleId)) return;
+
+    const style = document.createElement("style");
+    style.id = styleId;
+
+    style.textContent = `
+      #${SECTION_ID} {
+        margin: 36px auto;
+        padding: 28px;
+        border: 1px solid var(--line, #dfe5e1);
+        border-radius: 24px;
+        background: var(--card, #ffffff);
+        color: var(--ink, #14201b);
+      }
+
+      #${SECTION_ID} .bl-tc-kicker {
+        color: var(--green, #1f8a62);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+
+      #${SECTION_ID} .bl-tc-lead {
+        max-width: 720px;
+        color: var(--muted, #66736c);
+        line-height: 1.7;
+        margin: 12px 0 24px;
+      }
+
+      #${SECTION_ID} .bl-tc-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin: 22px 0;
+      }
+
+      #${SECTION_ID} .bl-tc-card {
+        padding: 18px;
+        border: 1px solid var(--line, #dfe5e1);
+        border-radius: 16px;
+        background: var(--bg, #f7f9f7);
+      }
+
+      #${SECTION_ID} .bl-tc-icon {
+        font-size: 27px;
+        margin-bottom: 10px;
+      }
+
+      #${SECTION_ID} .bl-tc-card h3 {
+        font-size: 15px;
+        margin: 0 0 8px;
+      }
+
+      #${SECTION_ID} .bl-tc-card p {
+        color: var(--muted, #66736c);
+        font-size: 13px;
+        line-height: 1.65;
+        margin: 0;
+      }
+
+      #${SECTION_ID} .bl-tc-dark {
+        background: #14201b;
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 22px;
+        margin-top: 22px;
+      }
+
+      #${SECTION_ID} .bl-tc-dark p {
+        color: #d0ded6;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      #${SECTION_ID} .bl-tc-status {
+        padding: 14px 16px;
+        margin-top: 16px;
+        border: 1px solid #53665b;
+        border-radius: 12px;
+        background: #1d3027;
+        color: #ffffff;
+        line-height: 1.6;
+        font-size: 13px;
+      }
+
+      #${SECTION_ID} .bl-tc-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      #${SECTION_ID} .bl-tc-actions button {
+        padding: 11px 16px;
+        border: 0;
+        border-radius: 10px;
+        background: #f6c453;
+        color: #14201b;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      #${SECTION_ID} .bl-tc-actions button:focus-visible {
+        outline: 3px solid #f6c453;
+        outline-offset: 3px;
+      }
+
+      #${SECTION_ID} .bl-tc-note {
+        margin-top: 14px;
+        color: var(--muted, #66736c);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      #${SECTION_ID} .bl-tc-pill {
+        display: inline-block;
+        border-radius: 30px;
+        background: #fff0d9;
+        color: #8a6512;
+        padding: 7px 10px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .04em;
+      }
+
+      #${SECTION_ID} .bl-tc-impact {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      #${SECTION_ID} .bl-tc-impact > div {
+        padding: 18px;
+        border-radius: 14px;
+        background: var(--green-soft, #e3f3ec);
+      }
+
+      #${SECTION_ID} .bl-tc-impact strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      #${SECTION_ID} .bl-tc-impact span {
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 760px) {
+        #${SECTION_ID} {
+          padding: 18px;
+        }
+
+        #${SECTION_ID} .bl-tc-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        #${SECTION_ID} .bl-tc-impact {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 440px) {
+        #${SECTION_ID} .bl-tc-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function isHomePage() {
+    const hash = window.location.hash;
+
+    return (
+      hash === "" ||
+      hash === "#" ||
+      hash === "#/" ||
+      hash.startsWith("#/home")
+    );
+  }
+
+  function buildSection() {
+    const section = document.createElement("section");
+
+    section.id = SECTION_ID;
+    section.className = "wrap";
+
+    section.innerHTML = `
+      <div class="bl-tc-kicker">
+        BorrowLoop · Security and trust
+      </div>
+
+      <h2 style="font-size:clamp(26px,4vw,36px);margin:10px 0">
+        Why TideCloak matters
+      </h2>
+
+      <p class="bl-tc-lead">
+        BorrowLoop helps neighbours borrow valuable belongings
+        from people they may not know. Trust requires more than
+        a listing: users need secure access, clear permissions,
+        condition evidence and a fair way to resolve disputes.
+      </p>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font-size:30px">🛡️</span>
+        <div style="flex:1;min-width:180px">
+          <h3 style="margin:0 0 5px">TideCloak + BorrowLoop</h3>
+          <p style="margin:0;color:var(--muted,#66736c);font-size:13px">
+            Proposed authentication and authorization architecture
+          </p>
+        </div>
+        <span class="bl-tc-pill">CONCEPT DEMO</span>
+      </div>
+
+      <div class="bl-tc-grid">
+        <article class="bl-tc-card">
+          <div class="bl-tc-icon">👤</div>
+          <h3>1. User signs in</h3>
+          <p>
+            A borrower or item owner attempts to access
+            BorrowLoop features.
+          </p>
+        </article>
+
+        <article class="bl-tc-card">
+          <div class="bl-tc-icon">🔐</div>
+          <h3>2. Authenticate</h3>
+          <p>
+            The planned TideCloak integration authenticates
+            the user's identity.
+          </p>
+        </article>
+
+        <article class="bl-tc-card">
+          <div class="bl-tc-icon">⚖️</div>
+          <h3>3. Check permissions</h3>
+          <p>
+            The application backend must verify whether the
+            authenticated user is authorized for the action.
+          </p>
+        </article>
+
+        <article class="bl-tc-card">
+          <div class="bl-tc-icon">🤝</div>
+          <h3>4. Protect the transaction</h3>
+          <p>
+            BorrowLoop handles rental records, deposit states,
+            condition evidence and dispute reviews.
+          </p>
+        </article>
+      </div>
+
+      <div class="bl-tc-dark">
+        <div class="bl-tc-kicker" style="color:#c9f4de">
+          Interactive presentation
+        </div>
+
+        <h3 style="font-size:22px;margin:10px 0">
+          Simulate a protected action
+        </h3>
+
+        <p>
+          Choose an example below to explain how authentication
+          and authorization would fit into BorrowLoop.
+          These buttons simulate the concept only.
+        </p>
+
+        <div class="bl-tc-actions">
+          <button type="button" data-tc-action="borrow">
+            Borrow an item
+          </button>
+
+          <button type="button" data-tc-action="dispute">
+            Review a damage claim
+          </button>
+
+          <button type="button" data-tc-action="unauthorized">
+            Try an unauthorized action
+          </button>
+
+          <button type="button" data-tc-action="reset">
+            Reset demo
+          </button>
+        </div>
+
+        <div class="bl-tc-status"
+             id="blTidecloakStatus"
+             aria-live="polite"
+             role="status">
+          Ready. Choose an action to see the proposed security flow.
+        </div>
+      </div>
+
+      <p class="bl-tc-note">
+        Important: this is a simulated presentation, not a live
+        TideCloak connection. It does not authenticate users,
+        enforce real permissions or process payments. A production
+        implementation would require TideCloak configuration and
+        backend-side token and permission validation.
+      </p>
+
+      <div style="margin-top:34px">
+        <div class="bl-tc-kicker">Value and impact</div>
+
+        <h2 style="font-size:27px;margin:10px 0">
+          More than just borrowing
+        </h2>
+
+        <p class="bl-tc-lead">
+          Sharing existing belongings can help neighbours save
+          money, earn from items they rarely use and reduce the
+          need to buy products for occasional use.
+        </p>
+
+        <div class="bl-tc-impact">
+          <div>
+            <strong>Save money</strong>
+            <span>
+              Borrow items instead of buying them for one-time use.
+            </span>
+          </div>
+
+          <div>
+            <strong>Earn income</strong>
+            <span>
+              Owners can earn from belongings they already have.
+            </span>
+          </div>
+
+          <div>
+            <strong>Reuse resources</strong>
+            <span>
+              Help existing products serve more people.
+            </span>
+          </div>
+        </div>
+
+        <p class="bl-tc-note">
+          These are expected benefits, not measured outcomes.
+          Actual impact depends on user adoption and usage.
+        </p>
+      </div>
+    `;
+
+    section.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-tc-action]");
+
+      if (!button) return;
+
+      const status = section.querySelector("#blTidecloakStatus");
+
+      if (!status) return;
+
+      const action = button.dataset.tcAction;
+
+      if (action === "borrow") {
+        status.textContent =
+          "DEMO: A borrower starts a rental request. In the planned " +
+          "integration, TideCloak authenticates the user; the " +
+          "BorrowLoop backend then checks permission before " +
+          "processing the request. No real authentication occurs here.";
+      } else if (action === "dispute") {
+        status.textContent =
+          "DEMO: A damage claim is submitted for review. In a real " +
+          "system, the backend would verify the user's identity and " +
+          "role before allowing an authorized reviewer to access " +
+          "the claim. Evidence and review rules determine the outcome.";
+      } else if (action === "unauthorized") {
+        status.textContent =
+          "DEMO: A user without the required permission should be " +
+          "denied by the server. This button only illustrates the " +
+          "expected outcome; it does not enforce real access control.";
+      } else if (action === "reset") {
+        status.textContent =
+          "Ready. Choose an action to see the proposed security flow.";
+      }
+    });
+
+    return section;
+  }
+
+  function renderSection() {
+    addStyles();
+
+    const oldSection = document.getElementById(SECTION_ID);
+
+    if (!isHomePage()) {
+      if (oldSection) oldSection.remove();
+      return;
+    }
+
+    const app = document.getElementById("app");
+
+    if (!app) return;
+
+    // Replace the earlier demo section if it already exists.
+    if (oldSection) oldSection.remove();
+
+    const section = buildSection();
+
+    app.appendChild(section);
+  }
+
+  window.addEventListener("hashchange", function () {
+    window.setTimeout(renderSection, 0);
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      window.setTimeout(renderSection, 0);
+    });
+  } else {
+    window.setTimeout(renderSection, 0);
+  }
+})();
